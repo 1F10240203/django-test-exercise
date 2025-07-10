@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="author" content="INIAD">
+    <title>To Do Application</title>
+</head>
+
+<body>
+  <h1>Edit task</h1>
+  <p>You can edit tasks from the following form</p>
+  <d action="{% url 'update' task.id %}" method="post">
+    {% csrf_token %}
+    <div>
+    <label for="titleInput">Title:</label>
+    <input type="text" id="titleInput" name="title" value="{{ task.title }}" placeholder="Input title">
+    </div>
+    <div></div>
+    <label for="dueInput">Due at</label><br>
+    <input type="datetime-local" id="dueInput" name="due_at" value="{{ task.due|date:'Y-m-d H:i' }}">
+    </div>
+    <div>
+      <button type="submit">Submit</button>
+    </div>
+    <button type="submit">Update</button>
+  </form>
+  <br>
+</body>
