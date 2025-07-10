@@ -51,6 +51,7 @@ def update(request, task_id):
         return redirect(detail, task_id)
     
     context = {
-        "task" : task,
+        "task" : task
     }
-    return render(request, "todo/update.html", context) 
+    return render(request, "todo/edit.html", context) 
+
