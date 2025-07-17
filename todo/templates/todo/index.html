@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 
+
   <head>
     <title>To Do Application</title>
     <meta charset="UTF-8">
@@ -28,28 +29,58 @@
     </form>
     <br>
 
+<body>
+  <h1>Sample To Do Application</h1>
+  <p>You can submit tasks from the following form.</p>
+  <form action="{% url 'index' %}" method="post">
+    {% csrf_token %}
     <div>
-      <a href="{% url 'index' %}?order=due">Sort by Due Date</a> |
-      <a href="{% url 'index' %}?order=post">Sort by Posted Date</a>
+      <label for="titleInput">Title</label><br>
+      <input id="titleInput" name="title" type="text" placeholder="Input title">
     </div>
-
-    {% for task in tasks %}
-    <div class="text">
-      <h2><a href="{% url "detail" task.id %}">{{ task.title }}</a></h2>
-      <ul>
-        <li>Posted at: {{ task.posted_at }}</li>
-        {% if task.due_at %} 
-        <li>Due at: {{ task.due_at }}</li>
-        {% endif %}
-        {% if task.completed %} 
-        <li>Status: Completed</li>
-        {% else %}
-        <li>Status: Not Completed</li>
-        {% endif %}
-      </ul>
+    <div>
+      <label for="dueInput">Due at:</label><br>
+      <input id="dueInput" name="due_at" type="datetime-local">
     </div>
-    {% endfor %}
+    <div>
+      <button type="submit">Submit</button>
+    </div>
+  </form>
+  <br>
 
+  <!-- 完了済み表示切替フォーム -->
+  <form method="get" id="toggleCompletedForm">
+    <label>
+      <input type="checkbox" name="show_completed" value="1" {% if show_completed %}checked{% endif %}
+             onchange="document.getElementById('toggleCompletedForm').submit();">
+      Show Completed Tasks
+    </label>
+    <!-- 現在のorderパラメータを保持 -->
+    <input type="hidden" name="order" value="{{ request.GET.order }}">
+  </form>
+
+  <br>
+
+  <div>
+    <a href="{% url 'index' %}?order=due{% if show_completed %}&show_completed=1{% endif %}">Sort by Due Date</a> |
+    <a href="{% url 'index' %}?order=post{% if show_completed %}&show_completed=1{% endif %}">Sort by Posted Date</a>
+  </div>
+
+  {% for task in tasks %}
+  <div class="text">
+    <h2><a href="{% url 'detail' task.id %}">{{ task.title }}</a></h2>
+    <ul>
+      <li>Posted at: {{ task.posted_at }}</li>
+      {% if task.due_at %}
+      <li>Due at: {{ task.due_at }}</li>
+      {% endif %}
+      {% if task.completed %}
+      <p><strong>完了済</strong></p>
+      {% else %}
+      <li>Status: Not Completed</li>
+      {% endif %}
+  </div>
+  {% endfor %}
     <script>
       function updateCurrentTime() {
         const now = new Date();
@@ -74,5 +105,4 @@
       setInterval(updateCurrentTime, 1000);
     </script>
   </body>
-
 </html>
