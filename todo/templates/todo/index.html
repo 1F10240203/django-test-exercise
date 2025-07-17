@@ -1,58 +1,137 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="ja">
-
   <head>
     <title>To Do Application</title>
-    <meta charset="UTF-8">
-    <meta name="author" content="INIAD">
+    <meta charset="UTF-8" />
+    <meta name="author" content="INIAD" />
     <link
       href="https://cdn.jsdelivr.net/npm/daisyui@5"
       rel="stylesheet"
-      type="text/css"/>
+      type="text/css"
+    />
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script>
+      tailwind.config = {
+        plugins: [daisyui],
+      };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/daisyui@3.8.0/dist/full.js"></script>
   </head>
 
-  <body class="bg-gray-100 items-center justify-center p-6 text-center min-h-screen">
+  <body
+    class="bg-gray-100 items-center justify-center p-6 text-center min-h-screen"
+  >
     <h class="text-4xl mb-4">Sample To Do Application</h>
-    <p>You can submit tasks from the following form.</p>
-    <form action="{% url 'index' %}" method="post" class="bg-white p-6 rounded shadow-md max-w-md mx-auto">
+    <p class="mt-4 mb-4">現在の時刻: <span id="current-time"></span></p>
+    <p class="mb-4">You can submit tasks from the following form.</p>
+    <form
+      action="{% url 'index' %}"
+      method="post"
+      class="bg-white p-6 rounded shadow-md max-w-md mx-auto"
+    >
       {% csrf_token %}
       <div>
-        <label for="titleInput">Title</label><br>
-        <input id="titleInput" name="title" type="text" placeholder="Input title">
+        <label for="titleInput">Title</label><br />
+        <input
+          id="titleInput"
+          name="title"
+          type="text"
+          placeholder="Input title"
+          class="input input-primary"
+        />
       </div>
       <div>
-        <label for="dueInput">Due at:</label><br>
-        <input id="dueInput" name="due_at" type="datetime-local">
+        <label for="dueInput">Due at:</label><br />
+        <input
+          id="dueInput"
+          name="due_at"
+          type="datetime-local"
+          class="input"
+        />
       </div>
       <div>
-        <button type="submit">Submit</button>
+        <button type="submit" class="btn btn-neutral btn-outline text-1xl">
+          Submit
+        </button>
       </div>
     </form>
-    <br>
+    <br />
 
+    <!-- 完了済み表示切替フォーム -->
+    <form method="get" id="toggleCompletedForm">
+      <label>
+        <input
+          type="checkbox"
+          name="show_completed"
+          value="1"
+          {%
+          if
+          show_completed
+          %}checked{%
+          endif
+          %}
+          onchange="document.getElementById('toggleCompletedForm').submit();"
+        />
+        Show Completed Tasks
+      </label>
+      <!-- 現在のorderパラメータを保持 -->
+      <input type="hidden" name="order" value="{{ request.GET.order }}" />
+    </form>
+    <br />
     <div class="mb-4">
-      <a href="{% url 'index' %}?order=due" class="text-blue-600 hover:text-blue-400">Sort by Due Date</a> |
-      <a href="{% url 'index' %}?order=post" class=" text-blue-600 hover:text-blue-400">Sort by Posted Date</a>
+      <a
+        href="{% url 'index' %}?order=due{% if show_completed %}&show_completed=1{% endif %}"
+        class="text-blue-600 hover:text-blue-400"
+        >Sort by Due Date</a
+      >
+      |
+      <a
+        href="{% url 'index' %}?order=post{% if show_completed %}&show_completed=1{% endif %}"
+        class="text-blue-600 hover:text-blue-400"
+        >Sort by Posted Date</a
+      >
     </div>
 
     {% for task in tasks %}
     <div class="bg-white p-6 mb-4 rounded shadow-md max-w-md mx-auto">
-      <h2 class = "text-blue-600 hover:text-blue-400"><a href="{% url "detail" task.id %}">{{ task.title }}</a></h2>
+      <h2 class="text-blue-600 hover:text-blue-400">
+        <a href="{% url 'detail' task.id %}">{{ task.title }}</a>
+      </h2>
       <ul>
         <li>Posted at: {{ task.posted_at }}</li>
-        {% if task.due_at %} 
+        {% if task.due_at %}
         <li>Due at: {{ task.due_at }}</li>
-        {% endif %}
-        {% if task.completed %} 
-        <li>Status: Completed</li>
+        {% endif %} {% if task.completed %}
+        <p><strong>Status: Completed</strong></p>
         {% else %}
         <li>Status: Not Completed</li>
         {% endif %}
       </ul>
     </div>
     {% endfor %}
+    <script>
+      function updateCurrentTime() {
+        const now = new Date();
+
+        const options = {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false,
+        };
+
+        const formattedTime = now.toLocaleString("ja-JP", options);
+
+        document.getElementById("current-time").textContent = formattedTime;
+      }
+
+      updateCurrentTime();
+
+      setInterval(updateCurrentTime, 1000);
+    </script>
   </body>
 </html>
