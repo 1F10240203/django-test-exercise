@@ -8,5 +8,9 @@ class TaskApi(viewsets.ModelViewSet):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
 
+    def get_queryset(self):
+        queryset = Task.objects.all()
+        return queryset
+
 router = routers.DefaultRouter()
 router.register(r"task", TaskApi)
