@@ -2,31 +2,30 @@ const path = require('path');
 
 module.exports = {
     mode: 'development',
-    entry: './src/index.js',
+    
+    entry: './src/index.tsx',
     output: {
         filename: 'bundle.js',
-        path: path.join(__dirname, '../django_react/react_app/static/js')
+        path: path.join(__dirname, '../todo/static/todo/js')
     },
     module: {
         rules: [
 			{
-				test: /\.js[x]?$/,  
+				
+				test: /\.(js|jsx|ts|tsx)$/,
 				exclude: /node_modules/,
 				use: {
 					loader: 'babel-loader',
 					options: {
 						presets: [
 							'@babel/preset-env',
-							'@babel/preset-react' 
-						],
-						plugins: ['@babel/plugin-syntax-jsx'] 
+							
+							['@babel/preset-react', { 'runtime': 'automatic' }],
+							
+							'@babel/preset-typescript',
+						]
 					}
 				}
-			},
-			{
-				test: /\.ts[x]?$/,  
-				exclude: /node_modules/,
-				use: 'ts-loader',
 			},
 			{
 				test: /\.css$/,
@@ -47,10 +46,13 @@ module.exports = {
 					},
 				],
 			},
-		],	
+			{
+				test: /\.(png|jpe?g|gif|svg)$/i,
+				type: 'asset/resource',
+			},
+		],
     },
-
     resolve: {
-        extensions: ['.js', '.jsx', '.json']
+        extensions: ['.tsx', '.ts', '.js', '.jsx', '.json']
 	}
 };
