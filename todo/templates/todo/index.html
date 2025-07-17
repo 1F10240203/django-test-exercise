@@ -6,12 +6,18 @@
     <title>To Do Application</title>
     <meta charset="UTF-8">
     <meta name="author" content="INIAD">
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@5"
+      rel="stylesheet"
+      type="text/css"/>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   </head>
 
-  <body>
-    <h1>Sample To Do Application</h1>
+  <body class="bg-gray-100 items-center justify-center p-6 text-center min-h-screen">
+    <h class="text-4xl mb-4">Sample To Do Application</h>
     <p>You can submit tasks from the following form.</p>
-    <form action="{% url 'index' %}" method="post">
+    <form action="{% url 'index' %}" method="post" class="bg-white p-6 rounded shadow-md max-w-md mx-auto">
       {% csrf_token %}
       <div>
         <label for="titleInput">Title</label><br>
@@ -27,14 +33,14 @@
     </form>
     <br>
 
-    <div>
-      <a href="{% url 'index' %}?order=due">Sort by Due Date</a> |
-      <a href="{% url 'index' %}?order=post">Sort by Posted Date</a>
+    <div class="mb-4">
+      <a href="{% url 'index' %}?order=due" class="text-blue-600 hover:text-blue-400">Sort by Due Date</a> |
+      <a href="{% url 'index' %}?order=post" class=" text-blue-600 hover:text-blue-400">Sort by Posted Date</a>
     </div>
 
     {% for task in tasks %}
-    <div class="text">
-      <h2><a href="{% url "detail" task.id %}">{{ task.title }}</a></h2>
+    <div class="bg-white p-6 mb-4 rounded shadow-md max-w-md mx-auto">
+      <h2 class = "text-blue-600 hover:text-blue-400"><a href="{% url "detail" task.id %}">{{ task.title }}</a></h2>
       <ul>
         <li>Posted at: {{ task.posted_at }}</li>
         {% if task.due_at %} 
@@ -49,5 +55,4 @@
     </div>
     {% endfor %}
   </body>
-
 </html>
