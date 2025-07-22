@@ -6,13 +6,26 @@
     <meta charset="UTF-8">
     <meta name="author" content="INIAD">
     <title>To Do Application</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@5"
+      rel="stylesheet"
+      type="text/css"
+      />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        plugins: [daisyui],
+      };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/daisyui@3.8.0/dist/full.js"></script>    
 </head>
 
-<body>
-  <h1>Edit task</h1>
+<body class="bg-gray-100 items-center justify-center p-6 text-center min-h-screen">
+  <h1 class="text-4xl mb-4">Edit task</h1>
   <p>You can edit tasks from the following form</p>
   <d action="{% url 'update' task.id %}" method="post">
     {% csrf_token %}
+    <div class="bg-white p-6 rounded shadow-md max-w-md mx-auto">
     <div>
     <label for="titleInput">Title:</label>
     <input type="text" id="titleInput" name="title" value="{{ task.title }}" placeholder="Input title">
@@ -21,10 +34,9 @@
     <label for="dueInput">Due at</label><br>
     <input type="datetime-local" id="dueInput" name="due_at" value="{{ task.due|date:'Y-m-d H:i' }}">
     </div>
-    <div>
-      <button type="submit">Submit</button>
-    </div>
-    <button type="submit">Update</button>
+    <button type="submit" class="text-blue-600 hover:text-blue-400">Submit</button> |
+    <button type="submit" class="text-blue-600 hover:text-blue-400">Update</button>
   </form>
+  </div>
   <br>
 </body>
